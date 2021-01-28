@@ -9,5 +9,6 @@ const connection = async () => {
         console.log(error);
     }
 };
-
-connection();
+module.exports = {
+    connection,
+};

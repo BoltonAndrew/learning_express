@@ -3,11 +3,21 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const { Task } = require('./models/Task');
-require('./db/connection');
+const { connection } = require('./db/connection');
 const mongoose = require('mongoose');
 
 
 app.use(express.json());
+
+const myFunc = async (req, res, next) => {
+    connection();
+    fs.writeFileSync('./task.txt', req.body.task);
+    const task = new Task({ task: req.body.task });
+    await task.save();
+    mongoose.connection.close();
+    console.log("this happens first");
+    next();
+};
 
 app.get("/", (req, res) => {
     res.send("hello world");
@@ -45,11 +55,7 @@ app.get("/person/:id", (req, res) => {
     res.send("Check the VSCode terminal");
 });
 
-app.post("/task", async (req, res) => {
-    fs.writeFileSync('./task.txt', req.body.task);
-    const task = new Task({ task: req.body.task });
-    await task.save();
-    mongoose.connection.close();
+app.post("/task", myFunc, (req, res) => {
     res.send("success");
 });
 
