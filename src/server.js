@@ -2,6 +2,10 @@
 const express = require('express');
 const app = express();
 const fs = require('fs');
+const { Task } = require('./models/Task');
+require('./db/connection');
+const mongoose = require('mongoose');
+
 
 app.use(express.json());
 
@@ -41,8 +45,11 @@ app.get("/person/:id", (req, res) => {
     res.send("Check the VSCode terminal");
 });
 
-app.post("/task", (req, res) => {
+app.post("/task", async (req, res) => {
     fs.writeFileSync('./task.txt', req.body.task);
+    const task = new Task({ task: req.body.task });
+    await task.save();
+    mongoose.connection.close();
     res.send("success");
 });
 
