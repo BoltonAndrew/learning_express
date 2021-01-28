@@ -3,11 +3,15 @@ const express = require('express');
 const app = express();
 const fs = require('fs');
 const { Task } = require('./models/Task');
+const path = require('path');
 const { connection } = require('./db/connection');
 const mongoose = require('mongoose');
 
+const public_directory = path.join(__dirname, "../public");
+
 
 app.use(express.json());
+app.use(express.static(public_directory));
 
 const myFunc = async (req, res, next) => {
     connection();
@@ -18,10 +22,6 @@ const myFunc = async (req, res, next) => {
     console.log("this happens first");
     next();
 };
-
-app.get("/", (req, res) => {
-    res.send("hello world");
-});
 
 app.post("/", (req, res) => {
     console.log(req.body);
