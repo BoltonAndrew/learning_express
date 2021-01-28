@@ -1,6 +1,7 @@
 /*jshint esversion: 8*/
 const express = require('express');
 const app = express();
+const fs = require('fs');
 
 app.use(express.json());
 
@@ -38,6 +39,11 @@ app.post("/stuff", (req, res) => {
 app.get("/person/:id", (req, res) => {
     console.log(req.params.id);
     res.send("Check the VSCode terminal");
+});
+
+app.post("/task", (req, res) => {
+    fs.writeFileSync('./task.txt', req.body.task);
+    res.send("success");
 });
 
 app.listen(5000, () => {
